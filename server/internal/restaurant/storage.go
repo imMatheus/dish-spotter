@@ -26,7 +26,7 @@ func NewRestaurantStorage(db *mongo.Database) *RestaurantStorage {
 	}
 }
 
-func (s *RestaurantStorage) createRestaurant(name string, completed bool, ctx context.Context) (string, error) {
+func (s *RestaurantStorage) createRestaurant(name string, ctx context.Context) (string, error) {
 	result, err := s.collection.InsertOne(ctx, bson.M{"name": name})
 	if err != nil {
 		return "", err

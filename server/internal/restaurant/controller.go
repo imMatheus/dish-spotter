@@ -40,7 +40,7 @@ func (t *RestaurantController) create(c *fiber.Ctx) error {
 	}
 
 	// create the restaurant
-	id, err := t.storage.createRestaurant(req.Name, false, c.Context())
+	id, err := t.storage.createRestaurant(req.Name, c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to create restaurant",

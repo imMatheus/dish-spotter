@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/swagger"
 	"github.com/immatheus/dish-spotter/server/config"
 	_ "github.com/immatheus/dish-spotter/server/docs"
+	"github.com/immatheus/dish-spotter/server/internal/restaurant"
 	"github.com/immatheus/dish-spotter/server/internal/storage"
 	"github.com/immatheus/dish-spotter/server/internal/todo"
 	"github.com/immatheus/dish-spotter/server/pkg/shutdown"
@@ -96,6 +97,10 @@ func buildServer(env config.EnvVars) (*fiber.App, func(), error) {
 	todoStore := todo.NewTodoStorage(db)
 	todoController := todo.NewTodoController(todoStore)
 	todo.AddTodoRoutes(app, todoController)
+
+	restaurantStore := restaurant.NewRestaurantStorage(db)
+	restaurantController := restaurant.NewRestaurantController(restaurantStore)
+	restaurant.AddRestaurantsRoutes(app, restaurantController)
 
 	return app, func() {
 		storage.CloseMongo(db)
