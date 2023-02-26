@@ -7,11 +7,11 @@ body {
 }
 
 /* For mapbox watermark to be removed */
-/* .mapboxgl-control-container {
+.mapboxgl-control-container {
   display: none !important;
-} */
+}
 
-.mapboxgl-popup {
+/* .mapboxgl-popup {
   max-width: 200px;
 }
 .mapboxgl-popup-content {
@@ -26,10 +26,10 @@ body {
   height: 56px;
   width: 56px;
   background-image: url(https://docs.mapbox.com/help/demos/building-a-store-locator/marker.png);
-}
+}*/
 
 /* Marker tweaks */
-.mapboxgl-popup {
+/* .mapboxgl-popup {
   padding-bottom: 50px;
 }
 
@@ -67,4 +67,4 @@ body {
 
 .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
   border-bottom-color: #91c949;
-}
+} */

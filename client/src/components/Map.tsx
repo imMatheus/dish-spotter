@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
 import MapBox from "react-map-gl";
+import mapboxgl from "mapbox-gl";
 
 interface MapProps {}
 
@@ -52,16 +52,16 @@ const restaurants = [
 export const Map: React.FC<MapProps> = ({}) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [lng, setLng] = useState(18.06324);
+  const [lng, setLng] = useState(18.07334);
   const [lat, setLat] = useState(59.334591);
-  const [zoom, setZoom] = useState(13);
+  const [zoom, setZoom] = useState(12);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_BOX_TOKEN || "";
     map.current = new mapboxgl.Map({
       container: mapContainer.current || "",
-      style: "mapbox://styles/mapbox/light-v11",
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
     });
@@ -69,68 +69,38 @@ export const Map: React.FC<MapProps> = ({}) => {
     map.current.on("load", () => {
       if (!map.current) return; // initialize map only once
       /* Add the data to your map as a layer */
-      map.current.addSource("places", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: restaurants,
+      map.current.addLayer({
+        id: "locations",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: restaurants,
+          },
         },
       });
-
-      function flyToStore(restaurant: (typeof restaurants)[number]) {
-        map.current?.flyTo({
-          center: restaurant.geometry.coordinates,
-          zoom: 13,
-        });
-      }
-
-      function createPopUp(restaurant: (typeof restaurants)[number]) {
-        if (!map.current) return;
-        const popUps = document.getElementsByClassName("mapboxgl-popup");
-        if (popUps[0]) popUps[0].remove();
-        const popup = new mapboxgl.Popup({ closeOnClick: false })
-          .setLngLat(restaurant.geometry.coordinates)
-          .setHTML(
-            `<h3>Sweetgreen</h3><h4>${restaurant.properties.address}</h4>`
-          )
-          .addTo(map.current);
-      }
-
-      for (const restaurant of restaurants) {
-        /* Create a div element for the marker. */
-        const el = document.createElement("div");
-        /* Assign a unique `id` to the marker. */
-        el.id = `marker-${restaurant.properties.id}`;
-        /* Assign the `marker` class to each marker for styling. */
-        el.className = "marker";
-
-        /**
-         * Create a marker using the div element
-         * defined above and add it to the map.
-         **/
-        new mapboxgl.Marker(el, { offset: [0, -23] })
-          .setLngLat(restaurant.geometry.coordinates)
-          .addTo(map.current);
-
-        /**
-         * Listen to the element and when it is clicked, do three things:
-         * 1. Fly to the point
-         * 2. Close all other popups and display popup for clicked store
-         * 3. Highlight listing in sidebar (and remove highlight for all other listings)
-         **/
-        el.addEventListener("click", (e) => {
-          /* Fly to the point */
-          flyToStore(restaurant);
-          /* Close all other popups and display popup for clicked store */
-          createPopUp(restaurant);
-
-          e.stopPropagation();
-
-          // TODO: update selected state
-        });
-      }
     });
   }, [map, lat, lng, zoom]);
 
   return <div ref={mapContainer} className="relative h-full w-full" />;
 };
+
+/* <Marker
+  offsetTop={-48}
+  offsetLeft={-24}
+  longitude={18.06324}
+  latitude={59.334591}
+>
+  <img src="https://img.icons8.com/color/48/000000/marker.png" />
+</Marker> 
+{/* {restaurants.map((restaurant, index) => (
+  <Marker
+    key={index}
+    offset={[0, 0]}
+    longitude={restaurant.geometry.coordinates[0]}
+    latitude={restaurant.geometry.coordinates[1]}
+  >
+    <img src="https://img.icons8.com/color/48/000000/marker.png" />
+  </Marker>
+))} */
