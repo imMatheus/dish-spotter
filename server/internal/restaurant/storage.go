@@ -8,10 +8,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type cords struct {
+	X float64 `bson:"x" json:"x"`
+	Y float64 `bson:"y" json:"y"`
+}
+
 // how the restaurant is stored in the database
-type restaurantDB struct {
-	ID   primitive.ObjectID `bson:"_id" json:"id"`
-	Name string             `bson:"name" json:"name"`
+type restaurant struct {
+	ID          primitive.ObjectID `bson:"_id" json:"id"`
+	Name        string             `bson:"name" json:"name"`
+	Coordinates cords              `bson:"coordinates" json:"coordinates"`
 }
 
 type RestaurantStorage struct {
@@ -26,8 +32,14 @@ func NewRestaurantStorage(db *mongo.Database) *RestaurantStorage {
 	}
 }
 
-func (s *RestaurantStorage) createRestaurant(name string, ctx context.Context) (string, error) {
-	result, err := s.collection.InsertOne(ctx, bson.M{"name": name})
+func (s *RestaurantStorage) createRestaurant(newRestaurant *createRestaurantRequest, ctx context.Context) (string, error) {
+	result, err := s.collection.InsertOne(ctx,
+		bson.M{"name": newRestaurant.Name,
+			"coordinates": bson.M{
+				"x": newRestaurant.Coordinates.X,
+				"y": newRestaurant.Coordinates.Y,
+			}})
+
 	if err != nil {
 		return "", err
 	}
@@ -36,13 +48,13 @@ func (s *RestaurantStorage) createRestaurant(name string, ctx context.Context) (
 	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
-func (s *RestaurantStorage) getAllRestaurants(ctx context.Context) ([]restaurantDB, error) {
+func (s *RestaurantStorage) getAllRestaurants(ctx context.Context) ([]restaurant, error) {
 	cursor, err := s.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
 	}
 
-	restaurants := make([]restaurantDB, 0)
+	restaurants := make([]restaurant, 0)
 	if err = cursor.All(ctx, &restaurants); err != nil {
 		return nil, err
 	}

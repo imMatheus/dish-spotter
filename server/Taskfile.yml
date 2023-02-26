@@ -1,9 +1,12 @@
 version: '3'
 
 tasks:
+    # dev:
+    #     cmds:
+    #         - air
     dev:
         cmds:
-            - air
+            - task build && task start
 
     docs:
         cmds:

@@ -2,6 +2,8 @@ package restaurant
 
 import (
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type RestaurantController struct {
@@ -15,32 +17,35 @@ func NewRestaurantController(storage *RestaurantStorage) *RestaurantController {
 }
 
 type createRestaurantRequest struct {
-	Name string `json:"name"`
+	Name        string `json:"name" validate:"required"`
+	Coordinates cords  `bson:"coordinates" json:"coordinates" validate:"required,dive,required"`
 }
 
 type createRestaurantResponse struct {
 	ID string `json:"id"`
 }
 
-// @Summary Create one restaurant.
-// @Description creates one restaurant.
-// @Tags restaurants
-// @Accept */*
-// @Produce json
-// @Param restaurant body createRestaurantRequest true "Restaurant to create"
-// @Success 200 {object} createRestaurantResponse
-// @Router /restaurants [post]
 func (t *RestaurantController) create(c *fiber.Ctx) error {
 	// parse the request body
 	var req createRestaurantRequest
+
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
 		})
 	}
 
+	validate := validator.New()
+	err := validate.Struct(req)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body from validator",
+		})
+	}
+
 	// create the restaurant
-	id, err := t.storage.createRestaurant(req.Name, c.Context())
+	id, err := t.storage.createRestaurant(&req, c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to create restaurant",
@@ -52,13 +57,6 @@ func (t *RestaurantController) create(c *fiber.Ctx) error {
 	})
 }
 
-// @Summary Get all restaurants.
-// @Description fetch every restaurant available.
-// @Tags restaurants
-// @Accept */*
-// @Produce json
-// @Success 200 {object} []restaurantDB
-// @Router /restaurants [get]
 func (t *RestaurantController) getAll(c *fiber.Ctx) error {
 	// get all restaurants
 	restaurants, err := t.storage.getAllRestaurants(c.Context())

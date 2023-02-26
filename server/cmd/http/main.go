@@ -82,12 +82,19 @@ func buildServer(env config.EnvVars) (*fiber.App, func(), error) {
 	app := fiber.New()
 
 	// add middleware
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
 	app.Use(logger.New())
 
 	// add health check
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.SendString("Healthy!")
+	})
+
+	// add test ping pong route
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong!")
 	})
 
 	// add docs
