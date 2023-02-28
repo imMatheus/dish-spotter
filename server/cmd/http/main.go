@@ -94,7 +94,7 @@ func buildServer(env config.EnvVars) (*fiber.App, func(), error) {
 
 	// add test ping pong route
 	app.Get("/ping", func(c *fiber.Ctx) error {
-		return c.SendString("pong!")
+		return c.SendString("pong!!!")
 	})
 
 	// add docs
