@@ -2,6 +2,7 @@ package restaurant
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,6 +34,15 @@ func NewRestaurantStorage(db *mongo.Database) *RestaurantStorage {
 }
 
 func (s *RestaurantStorage) createRestaurant(newRestaurant *createRestaurantRequest, ctx context.Context) (string, error) {
+	// this might not be needed
+	if newRestaurant.Name == "" {
+		return "", fmt.Errorf("please provide a valid name for the new restaurant")
+	}
+
+	if newRestaurant.Coordinates.X == 0 || newRestaurant.Coordinates.Y == 0 {
+		return "", fmt.Errorf("please provide valid coordinates")
+	}
+
 	result, err := s.collection.InsertOne(ctx,
 		bson.M{"name": newRestaurant.Name,
 			"coordinates": bson.M{
@@ -49,6 +59,20 @@ func (s *RestaurantStorage) createRestaurant(newRestaurant *createRestaurantRequ
 }
 
 func (s *RestaurantStorage) getAllRestaurants(ctx context.Context) ([]restaurant, error) {
+	cursor, err := s.collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	restaurants := make([]restaurant, 0)
+	if err = cursor.All(ctx, &restaurants); err != nil {
+		return nil, err
+	}
+
+	return restaurants, nil
+}
+
+func (s *RestaurantStorage) getRestaurantById(ctx context.Context) ([]restaurant, error) {
 	cursor, err := s.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err

@@ -1,6 +1,7 @@
 import { Restaurant } from "@/types";
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
@@ -10,7 +11,7 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
   restaurant,
 }) => {
   return (
-    <div className="">
+    <Link href={`/restaurants/${restaurant.id}`} className="">
       <div className="relative mb-2 aspect-square w-full">
         <Image
           fill={true}
@@ -22,6 +23,6 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
       <h2 className="font-semibold">{restaurant.name || "defualt"}</h2>
       <p className="text-sm text-text-dimmed">Lorem ipsum dolor sit.</p>
       <p className="">$$</p>
-    </div>
+    </Link>
   );
 };

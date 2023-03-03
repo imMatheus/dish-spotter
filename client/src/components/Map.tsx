@@ -57,10 +57,10 @@ export const Map: React.FC<MapProps> = ({ restaurants }) => {
     map.current.on("load", loadMarkers);
   }, [map, lat, lng, zoom, restaurants, loadMarkers]);
 
-  useEffect(() => {
-    if (!map.current) return;
-    loadMarkers();
-  }, [map, restaurants, loadMarkers]);
+  // useEffect(() => {
+  //   if (!map.current || !map.current.isStyleLoaded) return;
+  //   loadMarkers();
+  // }, [map, restaurants, loadMarkers]);
 
   return <div ref={mapContainer} className="relative h-full w-full" />;
 };
