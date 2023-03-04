@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { signIn } from "next-auth/react";
 
 export const Navbar: React.FC = ({}) => {
   return (
@@ -8,7 +9,17 @@ export const Navbar: React.FC = ({}) => {
         Dish Spotter
       </Link>
       <div className="flex items-center gap-3">
-        <Link href="/sad">Home</Link>
+        <Link href="/restaurants">Restaurants</Link>
+        <button
+          className="rounded-md bg-primary px-4 py-0.5 text-white transition-opacity hover:opacity-80"
+          onClick={() => {
+            signIn().catch(() => {
+              alert("Could not sign you in");
+            });
+          }}
+        >
+          Sign in
+        </button>
       </div>
     </nav>
   );

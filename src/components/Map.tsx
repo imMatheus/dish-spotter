@@ -5,11 +5,19 @@ import mapboxgl from "mapbox-gl";
 import { env } from "~/env.mjs";
 import type { RouterOutputs } from "~/utils/api";
 
+type Coordinates = [
+  [number, number],
+  [number, number],
+  [number, number],
+  [number, number],
+  [number, number]
+];
 interface MapProps {
   restaurants: RouterOutputs["restaurants"]["getAll"];
+  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
 }
 
-export const Map: React.FC<MapProps> = ({ restaurants }) => {
+export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(18.07334);
@@ -58,8 +66,44 @@ export const Map: React.FC<MapProps> = ({ restaurants }) => {
       zoom: zoom,
     });
 
+    function updateCoordinates() {
+      if (!map.current) return;
+      const cords = map.current.getBounds();
+      console.log("cords");
+      console.log(cords);
+
+      const maxXCoord = 180;
+      const maxYCoord = 90;
+
+      const north = Math.max(
+        Math.min(cords.getNorth(), maxYCoord),
+        -1 * maxYCoord
+      );
+      const east = Math.max(
+        Math.min(cords.getEast(), maxXCoord),
+        -1 * maxXCoord
+      );
+      const south = Math.max(
+        Math.min(cords.getSouth(), maxYCoord),
+        -1 * maxYCoord
+      );
+      const west = Math.max(
+        Math.min(cords.getWest(), maxXCoord),
+        -1 * maxXCoord
+      );
+      setCoordinates([
+        [west, north],
+        [east, north],
+        [east, south],
+        [west, south],
+        [west, north],
+      ]);
+    }
+
+    map.current.on("dragend", updateCoordinates);
+    map.current.on("zoomend", updateCoordinates);
     // map.current.on("load", loadMarkers);
-  }, [map, lat, lng, zoom, restaurants]);
+  }, [map, lat, lng, zoom, restaurants, setCoordinates]);
 
   //   useEffect(() => {
   //     if (!map.current) return;

@@ -21,7 +21,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["a0.muscache.com"],
+    domains: ["a0.muscache.com", "avatars.githubusercontent.com"],
   },
 };
 export default config;

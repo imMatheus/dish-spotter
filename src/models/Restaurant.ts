@@ -2,16 +2,31 @@ import mongoose from "mongoose";
 
 interface IRestaurant {
   name: string;
+  images: string[];
   address: {
     street: string;
     city: string;
     country: string;
-    long: number;
-    lat: number;
+  };
+  location: {
+    coordinates: [number, number];
+    type: "Point";
   };
   rating: number;
   numberOfReviews: number;
 }
+
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ["Point"],
+    required: true,
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
+});
 
 const restaurantSchema = new mongoose.Schema<IRestaurant>(
   {
@@ -19,14 +34,22 @@ const restaurantSchema = new mongoose.Schema<IRestaurant>(
       type: String,
       required: true,
       minLength: 1,
-      maxLength: 30,
+      maxLength: 50,
+    },
+    images: {
+      type: [String],
+      required: true,
+      default: [],
     },
     address: {
       street: { type: String, required: true },
       city: { type: String, required: true },
       country: { type: String, required: true },
-      long: { type: Number, required: true },
-      lat: { type: Number, required: true },
+    },
+    location: {
+      type: pointSchema,
+      required: true,
+      index: "2dsphere",
     },
     rating: {
       type: Number,
