@@ -9,11 +9,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@choutkamartin/mongoose-adapter": "^0.1.0",
     "@tanstack/react-query": "^4.20.2",
     "@trpc/client": "^10.9.0",
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "mongoose": "^7.0.0",
     "next": "^13.2.1",
     "next-auth": "^4.19.0",
     "react": "18.2.0",
@@ -32,6 +34,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.34.0",
     "eslint-config-next": "^13.2.1",
+    "fongus": "^0.1.1",
     "postcss": "^8.4.14",
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",

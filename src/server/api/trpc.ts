@@ -19,6 +19,9 @@ import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "~/server/auth";
 
+import mongoose from "mongoose";
+import { env } from "~/env.mjs";
+
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -47,6 +50,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
+  await mongoose.connect(env.DATABASE_URL);
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
