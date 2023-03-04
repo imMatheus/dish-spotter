@@ -3,11 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { api } from "~/utils/api";
-
 const Home: NextPage = () => {
-  const { data: restaurants } = api.restaurants.getAll.useQuery();
-
   return (
     <>
       <Head>
@@ -18,8 +14,6 @@ const Home: NextPage = () => {
 
       <main>
         <h1>hej</h1>
-        {!restaurants ? "no data" : restaurants[0]?.address.city}
-        <pre>{JSON.stringify(restaurants, null, 2)}</pre>
       </main>
     </>
   );

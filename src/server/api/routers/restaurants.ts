@@ -28,7 +28,7 @@ export const restaurantsRouter = createTRPCRouter({
         console.log("j: ", j);
 
         const arr: any[] = [];
-        for (let i = 0; i < 10000; i++) {
+        for (let i = 0; i < 15000; i++) {
           arr.push({
             name: faker.name.fullName(),
             images: Array(12)
