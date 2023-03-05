@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+interface MenuItem {
+  name: string;
+  description: string;
+  price: number;
+}
+
 interface IRestaurant {
   name: string;
   images: string[];
@@ -14,7 +20,31 @@ interface IRestaurant {
   };
   rating: number;
   numberOfReviews: number;
+  menu?: {
+    sections: {
+      name: string;
+      items: MenuItem[];
+    }[];
+  };
 }
+
+const menuItemSchema = new mongoose.Schema<MenuItem>({
+  name: {
+    type: String,
+    required: true,
+    minLength: 1,
+  },
+  description: {
+    type: String,
+    required: true,
+    minLength: 1,
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+});
 
 const pointSchema = new mongoose.Schema({
   type: {
@@ -61,6 +91,21 @@ const restaurantSchema = new mongoose.Schema<IRestaurant>(
       type: Number,
       default: 0,
       required: true,
+    },
+    menu: {
+      type: {
+        sections: {
+          type: [
+            {
+              name: {
+                type: String,
+                required: true,
+              },
+              items: [menuItemSchema],
+            },
+          ],
+        },
+      },
     },
   },
   { timestamps: true }

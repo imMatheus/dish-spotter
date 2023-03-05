@@ -7,7 +7,9 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 import { Restaurant } from "~/models/Restaurant";
+import { isValidObjectId } from "mongoose";
 
 export const restaurantsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -23,12 +25,12 @@ export const restaurantsRouter = createTRPCRouter({
       })
     )
     .query(async ({ input }) => {
-      // await Restaurant.deleteMany();
+      // await Restaurant.deleteMany({ rating: { $gt: 2.5 } });
       for (let j = 0; j < 0; j++) {
         console.log("j: ", j);
 
         const arr: any[] = [];
-        for (let i = 0; i < 15000; i++) {
+        for (let i = 0; i < 1; i++) {
           arr.push({
             name: faker.name.fullName(),
             images: Array(12)
@@ -53,13 +55,38 @@ export const restaurantsRouter = createTRPCRouter({
             },
             rating: (Math.random() * 5).toFixed(2),
             numberOfReviews: Math.floor(Math.random() * 200) + 3,
+            menu: {
+              sections: [
+                {
+                  name: "Hot meals",
+                  items: Array(8)
+                    .fill("")
+                    .map(() => ({
+                      name: faker.lorem.words(),
+                      description: faker.lorem.paragraph(),
+                      price: parseFloat((Math.random() * 200 + 10).toFixed(1)),
+                    })),
+                },
+                {
+                  name: "Wines",
+                  items: Array(5)
+                    .fill("")
+                    .map(() => ({
+                      name: faker.lorem.words(),
+                      description: faker.lorem.paragraph(),
+                      price: parseFloat((Math.random() * 200 + 10).toFixed(1)),
+                    })),
+                },
+              ],
+            },
           });
         }
 
         console.log("inserting all docs");
 
-        await Restaurant.insertMany(arr);
+        const res = await Restaurant.insertMany(arr);
         console.log("done");
+        console.log(res);
       }
 
       console.log(input.coordinates);
@@ -74,5 +101,25 @@ export const restaurantsRouter = createTRPCRouter({
           },
         },
       }).limit(30);
+    }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      try {
+        if (!isValidObjectId(input.id)) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Could not find the given restaurant",
+          });
+        }
+
+        return Restaurant.findById(input.id);
+      } catch (error) {
+        return null;
+      }
     }),
 });

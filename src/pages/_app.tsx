@@ -1,4 +1,5 @@
 import { type AppType } from "next/app";
+import Head from "next/head";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
@@ -13,6 +14,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <Head>
+        <title>Dish spotter</title>
+        <meta name="description" content="Find restaurants near you" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <Component {...pageProps} />
     </SessionProvider>

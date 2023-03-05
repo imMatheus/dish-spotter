@@ -4,11 +4,11 @@ import { signIn } from "next-auth/react";
 
 export const Navbar: React.FC = ({}) => {
   return (
-    <nav className="sticky top-0 z-10 flex items-center justify-between bg-white px-6 py-2">
-      <Link href="/" className="text-3xl font-black tracking-wider">
+    <nav className="sticky top-0 z-10 flex items-center justify-between bg-white px-4 py-2">
+      <Link href="/" className="text-2xl font-black tracking-wider lg:text-3xl">
         Dish Spotter
       </Link>
-      <div className="flex items-center gap-3">
+      <div className="hidden items-center gap-3 lg:flex">
         <Link href="/restaurants">Restaurants</Link>
         <button
           className="rounded-md bg-primary px-4 py-0.5 text-white transition-opacity hover:opacity-80"
