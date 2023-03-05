@@ -21,6 +21,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <Navbar />
       <Component {...pageProps} />
+      <footer className="bg-pink-500 py-12">hej</footer>
     </SessionProvider>
   );
 };

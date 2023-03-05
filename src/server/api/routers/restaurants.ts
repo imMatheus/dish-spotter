@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { swamp, faker } from "fongus";
+import { faker } from "fongus";
 
 import {
   createTRPCRouter,
@@ -10,6 +10,7 @@ import {
 import { TRPCError } from "@trpc/server";
 import { Restaurant } from "~/models/Restaurant";
 import { isValidObjectId } from "mongoose";
+import { Review } from "~/models/Review";
 
 export const restaurantsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -117,9 +118,59 @@ export const restaurantsRouter = createTRPCRouter({
           });
         }
 
-        return Restaurant.findById(input.id);
+        console.log("waag1");
+        console.log(input);
+
+        const restaurant = await Restaurant.findById(input.id).lean();
+
+        if (!restaurant) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Could not find the given restaurant",
+          });
+        }
+
+        const reviews = await Review.find({ restaurant: input.id })
+          .limit(10)
+          .lean();
+
+        console.log(restaurant);
+        console.log(reviews);
+
+        return { ...restaurant, reviews };
       } catch (error) {
         return null;
       }
     }),
 });
+
+// const result = await Review.aggregate([
+//   { $match: { restaurant: input.id } },
+//   { $sort: { _id: -1 } },
+//   { $limit: 5 },
+//   {
+//     $lookup: {
+//       from: "restaurants",
+//       localField: "restaurant",
+//       foreignField: "_id",
+//       as: "restaurant",
+//     },
+//   },
+//   { $unwind: "$restaurant" },
+// ]);
+// console.log(result);
+
+// await Review.create({
+//   body: faker.lorem.sentence(25),
+//   images: [
+//     `https://avatars.githubusercontent.com/u/4004?v=4`,
+//     `https://avatars.githubusercontent.com/u/3004?v=4`,
+//   ],
+//   rating: 3.4,
+//   restaurant: input.id,
+//   user: {
+//     id: "64035d311a7406a12f13e034",
+//     name: "Matheus",
+//     image: "https://avatars.githubusercontent.com/u/77362975?v=4",
+//   },
+// });

@@ -10,7 +10,7 @@ interface MenuViewProps {
 export const MenuView: React.FC<MenuViewProps> = ({ menu }) => {
   return (
     <div className="my-8 sm:my-12">
-      <h2 className="mb-2 text-2xl font-semibold">Menu</h2>
+      <h2 className="mb-2 text-2xl font-bold">Menu</h2>
 
       {menu.sections.map((section) => (
         <div key={section.name}>

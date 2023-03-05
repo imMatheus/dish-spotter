@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { Star } from "react-feather";
 import { MenuView } from "~/components/restaurants/MenuView";
+import { ReviewsView } from "~/components/restaurants/ReviewsView";
 
 const Restaurant: NextPage = () => {
   const router = useRouter();
@@ -29,8 +30,8 @@ const Restaurant: NextPage = () => {
   return (
     <div className="px-4 sm:py-5">
       <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-4 sm:flex-col-reverse">
-          <div className="relative grid h-64 overflow-hidden rounded-lg sm:h-72 sm:grid-cols-4 sm:grid-rows-2 sm:gap-2 md:h-96">
+        <div className="mb-4 flex flex-col gap-4 sm:flex-col-reverse">
+          <div className="relative grid h-44 overflow-hidden rounded-lg sm:h-72 sm:grid-cols-4 sm:grid-rows-2 sm:gap-2 md:h-96">
             <div className="relative sm:col-span-2 sm:row-span-2">
               <Image
                 src={restaurant.images[0] || ""}
@@ -75,6 +76,10 @@ const Restaurant: NextPage = () => {
         </div>
 
         {restaurant.menu && <MenuView menu={restaurant.menu} />}
+
+        <ReviewsView reviews={restaurant.reviews} />
+
+        {/* <pre>{JSON.stringify(restaurant, null, 2)}</pre> */}
       </div>
     </div>
   );

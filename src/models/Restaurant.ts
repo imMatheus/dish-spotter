@@ -26,6 +26,8 @@ interface IRestaurant {
       items: MenuItem[];
     }[];
   };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const menuItemSchema = new mongoose.Schema<MenuItem>({

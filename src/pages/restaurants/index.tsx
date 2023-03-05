@@ -66,7 +66,6 @@ const Restaurants: NextPage = () => {
           />
         </div>
       </div>
-      <footer className="bg-pink-500 py-12">hej</footer>
       {/* <div className="h-[200vh] bg-gradient-to-b from-teal-500 to-lime-500"></div> */}
     </main>
   );
