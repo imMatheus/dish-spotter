@@ -31,7 +31,7 @@ export const restaurantsRouter = createTRPCRouter({
         console.log("j: ", j);
 
         const arr: any[] = [];
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 20; i++) {
           arr.push({
             name: faker.name.fullName(),
             images: Array(12)
@@ -50,8 +50,8 @@ export const restaurantsRouter = createTRPCRouter({
             location: {
               type: "Point",
               coordinates: [
-                faker.address.longitude(180, -180),
-                faker.address.latitude(90, -90),
+                faker.address.latitude(18.07, 18.05),
+                faker.address.longitude(59.35, 59.32),
               ],
             },
             rating: (Math.random() * 5).toFixed(2),
@@ -87,7 +87,7 @@ export const restaurantsRouter = createTRPCRouter({
 
         const res = await Restaurant.insertMany(arr);
         console.log("done");
-        console.log(res);
+        // console.table(res.map((r: any) => [r.location.coordinates]));
       }
 
       console.log(input.coordinates);
@@ -101,7 +101,11 @@ export const restaurantsRouter = createTRPCRouter({
             },
           },
         },
-      }).limit(30);
+      })
+        .sort({ name: -1 })
+        .limit(30);
+
+      // return Restaurant.find().sort({ createdAt: -1 }).limit(30);
     }),
   getById: publicProcedure
     .input(

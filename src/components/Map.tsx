@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { env } from "~/env.mjs";
 import type { RouterOutputs } from "~/utils/api";
@@ -24,33 +24,52 @@ export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
   const [lat, setLat] = useState(59.334591);
   const [zoom, setZoom] = useState(12);
 
-  //   const loadMarkers = useCallback(() => {
-  //     if (!map.current) return; // initialize map only once
-  //     /* Add the data to your map as a layer */
-  //     map.current.addLayer({
-  //       id: "locations",
-  //       type: "circle",
-  //       source: {
-  //         type: "geojson",
-  //         data: {
-  //           type: "FeatureCollection",
-  //           features: restaurants.map((r) => ({
-  //             type: "Feature",
-  //             id: r.id,
-  //             geometry: {
-  //               type: "Point",
-  //               coordinates: [r.coordinates.x, r.coordinates.y],
-  //             },
-  //             properties: {
-  //               id: r.id,
-  //               title: "Mapbox 2",
-  //               description: "Silicon valley, California",
-  //             },
-  //           })),
-  //         },
-  //       },
-  //     });
-  //   }, [restaurants]);
+  const loadMarkers = useCallback(() => {
+    console.log("made it here 56");
+    if (
+      !map.current ||
+      !map.current.isStyleLoaded() ||
+      !restaurants ||
+      restaurants.length === 0
+    )
+      return; // initialize map only once
+
+    if (
+      map.current.getLayer("locations") ||
+      map.current.getSource("locations")
+    ) {
+      map.current.removeLayer("locations");
+      map.current.removeSource("locations");
+    }
+
+    /* Add the data to your map as a layer */
+    map.current.addLayer({
+      id: "locations",
+      type: "circle",
+      source: {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: restaurants.map((r) => ({
+            type: "Feature",
+            id: r._id.toString(),
+            geometry: {
+              type: "Point",
+              coordinates: [
+                r.location.coordinates[0],
+                r.location.coordinates[1],
+              ],
+            },
+            properties: {
+              id: r._id.toString(),
+              title: r.name,
+              description: "Silicon valley, California",
+            },
+          })),
+        },
+      },
+    });
+  }, [restaurants]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -102,13 +121,17 @@ export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
 
     map.current.on("dragend", updateCoordinates);
     map.current.on("zoomend", updateCoordinates);
-    // map.current.on("load", loadMarkers);
-  }, [map, lat, lng, zoom, restaurants, setCoordinates]);
 
-  //   useEffect(() => {
-  //     if (!map.current) return;
-  //     loadMarkers();
-  //   }, [map, restaurants, loadMarkers]);
+    map.current.on("load", () => {
+      updateCoordinates();
+      loadMarkers();
+    });
+  }, [map, lat, lng, zoom, restaurants, loadMarkers, setCoordinates]);
+
+  useEffect(() => {
+    if (!map.current) return;
+    loadMarkers();
+  }, [map, restaurants, loadMarkers]);
 
   return <div ref={mapContainer} className="relative h-full w-full" />;
 };
