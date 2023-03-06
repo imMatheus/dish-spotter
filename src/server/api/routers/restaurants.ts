@@ -27,11 +27,12 @@ export const restaurantsRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       // await Restaurant.deleteMany({ rating: { $gt: 2.5 } });
+
       for (let j = 0; j < 0; j++) {
         console.log("j: ", j);
 
         const arr: any[] = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 1000; i++) {
           arr.push({
             name: faker.name.fullName(),
             images: Array(12)
@@ -50,8 +51,8 @@ export const restaurantsRouter = createTRPCRouter({
             location: {
               type: "Point",
               coordinates: [
-                faker.address.latitude(18.07, 18.05),
-                faker.address.longitude(59.35, 59.32),
+                faker.address.longitude(180, 180),
+                faker.address.latitude(90, 90),
               ],
             },
             rating: (Math.random() * 5).toFixed(2),
@@ -92,6 +93,21 @@ export const restaurantsRouter = createTRPCRouter({
 
       console.log(input.coordinates);
 
+      // const r = await Restaurant.find({
+      //   location: {
+      //     $geoWithin: {
+      //       $geometry: {
+      //         type: "Polygon",
+      //         coordinates: [input.coordinates],
+      //       },
+      //     },
+      //   },
+      // })
+      //   .sort({ rating: "desc" })
+      //   .limit(30)
+      //   .explain();
+      // console.log(r);
+
       return Restaurant.find({
         location: {
           $geoWithin: {
@@ -102,7 +118,7 @@ export const restaurantsRouter = createTRPCRouter({
           },
         },
       })
-        .sort({ name: -1 })
+        .sort({ rating: "desc" })
         .limit(30);
 
       // return Restaurant.find().sort({ createdAt: -1 }).limit(30);

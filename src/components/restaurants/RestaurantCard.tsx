@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Star } from "react-feather";
 import type { RouterOutputs } from "~/utils/api";
 
 interface RestaurantCardProps {
@@ -21,7 +22,13 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
           // src="https://a0.muscache.com/im/pictures/0c1fc2e1-2a09-4375-9bf6-d0df1b43fba8.jpg?im_w=720"
         />
       </div>
-      <h2 className="font-semibold">{restaurant.name}</h2>
+      <div className="flex justify-between">
+        <h2 className="font-semibold">{restaurant.name}</h2>
+        <div className="flex items-center gap-1">
+          <Star className="h-3 w-3 fill-text text-text" />
+          <p className="text-sm">{restaurant.rating.toFixed(1)}</p>
+        </div>
+      </div>
       <p className="text-sm text-text-dimmed">
         {restaurant.address.street}, {restaurant.address.city}
       </p>

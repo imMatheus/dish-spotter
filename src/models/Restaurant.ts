@@ -88,6 +88,7 @@ const restaurantSchema = new mongoose.Schema<IRestaurant>(
       default: 0,
       min: 0,
       max: 5,
+      index: true,
     },
     numberOfReviews: {
       type: Number,
