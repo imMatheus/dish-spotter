@@ -27,22 +27,27 @@ const Restaurants: NextPage = () => {
 
   return (
     <main className="flex w-full flex-col">
-      <div className="flex h-screen flex-1">
-        <div className="grid h-full w-[63%] grid-cols-3 gap-6 px-6">
+      <div className="flex flex-1 flex-col-reverse md:h-screen md:flex-row">
+        <div className="grid h-full w-full gap-4 py-4 px-6 sm:grid-cols-2 md:w-[63%] md:grid-cols-3 md:gap-6 md:py-0">
           {isLoading ? (
             <p>loading...</p>
-          ) : restaurants?.length === 0 ? (
+          ) : !restaurants || restaurants?.length === 0 ? (
             <p>no records</p>
           ) : (
-            restaurants?.map((restaurant) => (
-              <RestaurantCard
-                key={restaurant._id.toString()}
-                restaurant={restaurant}
-              />
-            ))
+            <>
+              <h4 className="text-center text-sm">
+                Over {restaurants.length || 1} restaurants
+              </h4>
+              {restaurants?.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant._id.toString()}
+                  restaurant={restaurant}
+                />
+              ))}
+            </>
           )}
         </div>
-        <div className="sticky top-[52px] h-screen max-h-[calc(100vh_-_52px)] flex-1 flex-shrink-0 bg-gray-300">
+        <div className="h-64 flex-shrink-0 bg-gray-300 md:sticky md:top-[44px] md:h-screen md:max-h-[calc(100vh_-_52px)] md:flex-1">
           <Map
             restaurants={restaurants || []}
             setCoordinates={setCoordinates}

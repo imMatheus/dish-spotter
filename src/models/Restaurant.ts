@@ -20,6 +20,7 @@ interface IRestaurant {
   };
   rating: number;
   numberOfReviews: number;
+  tags: string[];
   menu?: {
     sections: {
       name: string;
@@ -94,6 +95,12 @@ const restaurantSchema = new mongoose.Schema<IRestaurant>(
       type: Number,
       default: 0,
       required: true,
+    },
+    tags: {
+      type: [String],
+      required: true,
+      default: [],
+      index: true,
     },
     menu: {
       type: {

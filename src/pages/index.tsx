@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   return (
     <>
       <main>
-        <h1>hej</h1>
+        <h1>hej då</h1>
       </main>
     </>
   );

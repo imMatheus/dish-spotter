@@ -15,6 +15,7 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "classnames": "^2.3.2",
     "fongus": "^0.1.1",
     "mapbox-gl": "^2.13.0",
     "mongoose": "^7.0.0",

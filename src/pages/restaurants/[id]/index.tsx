@@ -2,8 +2,6 @@ import React from "react";
 import type { NextPage } from "next";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { Star } from "react-feather";
 import { MenuView } from "~/components/restaurants/MenuView";
 import { ReviewsView } from "~/components/restaurants/ReviewsView";
 import { HeaderView } from "~/components/restaurants/HeaderView";
