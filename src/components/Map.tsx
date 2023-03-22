@@ -1,28 +1,24 @@
 "use client";
 
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import { env } from "~/env.mjs";
 import type { RouterOutputs } from "~/utils/api";
+import type { BoundCoordinates } from "~/types/BoundCoordinates";
 
-type Coordinates = [
-  [number, number],
-  [number, number],
-  [number, number],
-  [number, number],
-  [number, number]
-];
 interface MapProps {
   restaurants: RouterOutputs["restaurants"]["getAll"];
-  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
+  setCoordinates: React.Dispatch<React.SetStateAction<BoundCoordinates>>;
+  coordinates: BoundCoordinates;
 }
 
-export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
+export const Map: React.FC<MapProps> = ({
+  restaurants,
+  setCoordinates,
+  coordinates,
+}) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [lng, setLng] = useState(18.07334);
-  const [lat, setLat] = useState(59.334591);
-  const [zoom, setZoom] = useState(12);
 
   const loadMarkers = useCallback(() => {
     console.log("made it here 56");
@@ -81,8 +77,12 @@ export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
       container: mapContainer.current || "",
       accessToken: env.NEXT_PUBLIC_MAP_BOX_TOKEN || "",
       style: "mapbox://styles/mapbox/streets-v11",
-      center: [lng, lat],
-      zoom: zoom,
+      bounds: [...new Set(coordinates.flat())] as [
+        number,
+        number,
+        number,
+        number
+      ],
     });
 
     function updateCoordinates() {
@@ -126,7 +126,7 @@ export const Map: React.FC<MapProps> = ({ restaurants, setCoordinates }) => {
       updateCoordinates();
       loadMarkers();
     });
-  }, [map, lat, lng, zoom, restaurants, loadMarkers, setCoordinates]);
+  }, [map, restaurants, loadMarkers, setCoordinates]);
 
   useEffect(() => {
     if (!map.current) return;
