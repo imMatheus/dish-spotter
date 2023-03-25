@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { MenuView } from "~/components/restaurants/MenuView";
 import { ReviewsView } from "~/components/restaurants/ReviewsView";
 import { HeaderView } from "~/components/restaurants/HeaderView";
+import { RestaurantImageGallery } from "~/components/restaurants/RestaurantImageGallery";
 
 const Restaurant: NextPage = () => {
   const router = useRouter();
@@ -37,6 +38,8 @@ const Restaurant: NextPage = () => {
 
         {/* <pre>{JSON.stringify(restaurant, null, 2)}</pre> */}
       </div>
+
+      <RestaurantImageGallery images={restaurant.images} />
     </div>
   );
 };
